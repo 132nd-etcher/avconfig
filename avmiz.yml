@@ -1,0 +1,58 @@
+version: pending.{build}
+
+skip_branch_with_pr: false
+skip_commits:
+  message: /!nobuild/
+skip_tags: false
+
+environment:
+  GIT_DAEMON_PATH:   "C:\\Program Files\\Git\\mingw64\\libexec\\git-core"
+  CYGWIN_GIT_PATH:   "C:\\cygwin\\bin;%GIT_DAEMON_PATH%"
+  CYGWIN64_GIT_PATH: "C:\\cygwin64\\bin;%GIT_DAEMON_PATH%"
+  APPVEYOR_ARTIFACT_UPLOAD_TIMEOUT: 60
+  PYTHON: "C:\\Python36-x64"
+  PYTHON_VERSION: "3.6"
+  PYTHON_ARCH: "64"
+  GIT_PATH: "%GIT_DAEMON_PATH%"
+
+init:
+  - cmd: echo "%APPVEYOR_PROJECT_SLUG%"
+  # If there is a newer build queued for the same PR, cancel this one.
+  # The AppVeyor 'rollout builds' option is supposed to serve the same
+  # purpose but is problematic because it tends to cancel builds pushed
+  # directly to master instead of just PR builds.
+  # credits: JuliaLang developers.
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
+        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
+        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
+        throw "There are newer queued builds for this pull request, failing early." }
+  - set PATH=%PYTHON%;%PYTHON%\Scripts;C:\MinGW\msys\1.0\bin;%PATH%
+  - "git config --system http.sslcainfo \"C:\\Program Files\\Git\\mingw64\\ssl\\certs\\ca-bundle.crt\""
+  - "git config --global core.autocrlf false"
+  - "%PYTHON%/python -V"
+  - "%PYTHON%/python -c \"import struct;print(8 * struct.calcsize(\'P\'))\""
+  - "pip --version"
+  
+install:
+  - cmd: pip install git+https://github.com/132nd-vWing/EMFT.git@feature/init#egg=emft
+
+build_script:
+  - cmd: for /f "delims=" %%i in ('git describe --tags') do set MISSION_VERSION=%%i
+  - cmd: appveyor UpdateBuild -Version "%MISSION_VERSION%.%APPVEYOR_BUILD_NUMBER%"
+  - cmd: emft recompose -f "%APPVEYOR_PROJECT_NAME%-%MISSION_VERSION%.miz"
+
+test: off
+
+artifacts:
+  - path: '*.miz'
+    name: mission
+  
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: NsKzrR+oV1WGhR8oN9koVoosxhS4kEmuKqKG9p7DVEn4mlXb10VCXEzK8ADiDSIG
+    artifact: 'mission'
+    draft: false
+    force_update: true
+    on:
+      APPVEYOR_REPO_TAG: true
