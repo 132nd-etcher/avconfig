@@ -68,7 +68,7 @@ install:
   # - "%PYTHON%\\python.exe -m pip install --disable-pip-version-check --upgrade pip setuptools"
   - cmd: pip install pipenv
   - cmd: pipenv install . --dev
-  - cmd: del Pipfile.lock
+  # - cmd: del Pipfile.lock
 
 build_script:
   # - cmd: IF /I "%APPVEYOR_PROJECT_NAME%"=="epab" pipenv run pip install . --no-dependencies
