@@ -1,6 +1,6 @@
 version: pending.{build}
 max_jobs: 10
-skip_branch_with_pr: true
+skip_branch_with_pr: false
 skip_commits:
   files:
     - docs/*
