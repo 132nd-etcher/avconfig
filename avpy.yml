@@ -1,4 +1,4 @@
-version: pending.{build}
+version: pending.{build}-{branch}.%APPVEYOR_REPO_COMMIT%
 max_jobs: 10
 skip_branch_with_pr: false
 skip_commits:
