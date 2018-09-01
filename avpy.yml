@@ -64,7 +64,7 @@ init:
 
 
 install:
-  - choco install md5 upx
+  - choco install md5 upx graphviz.portable
   - "%PYTHON%\\python.exe -m pip install --disable-pip-version-check --upgrade pip setuptools"
   - cmd: pip install pipenv
   - cmd: pipenv install . --dev --deploy
