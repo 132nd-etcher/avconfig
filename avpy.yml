@@ -90,6 +90,8 @@ artifacts:
     name: checksum
   - path: dist\*.exe
     name: exe
+  - path: graphs\*.png
+    name: graphs
   - path: artifacts\*
 
 deploy:
