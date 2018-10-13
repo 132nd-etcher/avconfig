@@ -67,6 +67,7 @@ install:
   - choco install md5 upx graphviz.portable
   - "%PYTHON%\\python.exe -m pip install --disable-pip-version-check --upgrade pip setuptools"
   - cmd: pip install pipenv==2018.7.1
+  - cmd: pipenv run pip install pip==18.0
   - cmd: pipenv install . --dev --deploy
   # - cmd: del Pipfile.lock
 
