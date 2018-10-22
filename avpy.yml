@@ -100,7 +100,7 @@ artifacts:
 deploy:
   tag: $(EPAB_VERSION)
   release: $(APPVEYOR_REPO_COMMIT_MESSAGE)
-  description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
+  description: $(RELEASE_DESCRIPTION)
   provider: GitHub
   auth_token:
     secure: NsKzrR+oV1WGhR8oN9koVoosxhS4kEmuKqKG9p7DVEn4mlXb10VCXEzK8ADiDSIG
