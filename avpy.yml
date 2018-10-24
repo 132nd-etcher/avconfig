@@ -6,7 +6,6 @@ skip_commits:
   files:
     - docs/*
     - '**/*.html'
-    - 'CHANGELOG.rst'
   message: /^release.*/
 skip_tags: true
 
