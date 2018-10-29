@@ -67,7 +67,7 @@ init:
 
 
 install:
-  - choco install md5 upx graphviz.portable
+  # - choco install md5 upx graphviz.portable
   - "%PYTHON%\\python.exe -m pip install --disable-pip-version-check --upgrade pip setuptools pipenv"
   # - cmd: pip install git+https://github.com/pypa/pipenv.git
   # - cmd: pip install pipenv==2018.7.1
@@ -83,7 +83,8 @@ build_script:
   - cmd: cd dist
   - ps: Get-ChildItem | ForEach-Object { md5 -n $_.FullName > "$($_.FullName).md5" }
   - cmd: cd ..
-  - cmd: echo %EPAB_VERSION%
+  - cmd: echo "%EPAB_VERSION%"
+  - cmd: echo "%RELEASE_DESCRIPTION%"
   
 #on_finish:
   #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))  
