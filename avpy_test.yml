@@ -12,6 +12,9 @@ skip_tags: true
 # Clone only 50 latest commits
 clone_depth: 50
 
+cache:
+  - '%LOCALAPPDATA%\pip\Cache'
+
 environment:
   GIT_DAEMON_PATH:   "C:\\Program Files\\Git\\mingw64\\libexec\\git-core"
   CYGWIN_GIT_PATH:   "C:\\cygwin\\bin;%GIT_DAEMON_PATH%"
