@@ -68,17 +68,15 @@ init:
 
 install:
   # - choco install md5 upx graphviz.portable
-  - "%PYTHON%\\python.exe -m pip install --disable-pip-version-check --upgrade pip setuptools pipenv"
-  # - cmd: pip install git+https://github.com/pypa/pipenv.git
-  # - cmd: pip install pipenv==2018.7.1
-  # - cmd: pipenv run python -m pip install -U pip==18.0
-  - cmd: pipenv install --dev --deploy
-  # - cmd: del Pipfile.lock
+  - "%PYTHON%\\python.exe -m pip install --disable-pip-version-check --upgrade pip setuptools"
+  - cmd: pip install git+https://github.com/etcher-be/epab@feature/test_branch#egg=epab
 
 build_script:
   # - cmd: IF /I "%APPVEYOR_PROJECT_NAME%"=="epab" pipenv run pip install . --no-dependencies
-  - cmd: pipenv run python -m epab -v
-  - cmd: pipenv run python -m epab release
+  - cmd: python -m epab -v
+  - cmd: python -m epab av clean
+  - cmd: python -m epab av checkout-active-branch
+  - cmd: python -m epab av compute-next-version
   - cmd: pipenv run python -m epab freeze %EPAB_VERSION%
   - cmd: cd dist
   - ps: Get-ChildItem | ForEach-Object { md5 -n $_.FullName > "$($_.FullName).md5" }
