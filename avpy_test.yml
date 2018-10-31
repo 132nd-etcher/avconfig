@@ -39,6 +39,7 @@ install:
   - cmd: pip install git+https://github.com/etcher-be/epab@feature/test_branch#egg=epab
 
 build_script:
+  - cmd: git tag
   - cmd: python -m epab -v
   - cmd: python -m epab av clean
   - cmd: python -m epab av checkout-active-branch
@@ -51,6 +52,7 @@ build_script:
   - cmd: python -m epab av check-dirty "linters produced artifacts"
   - cmd: python -m epab pytest -l
   - cmd: python -m epab av check-dirty "tests produced artifacts"
+  - cmd: python -m epab av release
   
 #on_finish:
   #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))  
@@ -65,11 +67,12 @@ artifacts:
   - path: graphs\*.png
     name: graphs
   - path: artifacts\*
+    name: other
 
 deploy:
-  tag: "$(EPAB_VERSION)"
-  release: "$(APPVEYOR_REPO_COMMIT_MESSAGE)"
-  description: "$(RELEASE_DESCRIPTION)"
+  tag: "$(_EPAB_CI_NEXT_VERSION)"
+  release: "$(_EPAB_CI_RELEASE_TITLE)"
+  description: "$(_EPAB_CI_RELEASE_DESCRIPTION)"
   provider: GitHub
   auth_token:
     secure: NsKzrR+oV1WGhR8oN9koVoosxhS4kEmuKqKG9p7DVEn4mlXb10VCXEzK8ADiDSIG
