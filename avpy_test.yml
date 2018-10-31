@@ -43,6 +43,7 @@ build_script:
   - cmd: python -m epab -v
   - cmd: python -m epab av clean
   - cmd: python -m epab av checkout-active-branch
+  - cmd: git tag
   - cmd: python -m epab av find-previous-version
   - cmd: python -m epab av compute-next-version
   - cmd: python -m epab av make-release-description
