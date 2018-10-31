@@ -68,6 +68,7 @@ build_script:
   - cmd: python -m epab av find-previous-version
   - cmd: python -m epab av compute-next-version
   - cmd: python -m epab av make-release-description
+  - cmd: python -m epab av make-release-title
   - cmd: python -m epab av debug
   - cmd: python -m epab av check-dirty "initial check"
   - cmd: python -m epab lint
