@@ -75,6 +75,7 @@ build_script:
   - cmd: python -m epab pytest -l
   - cmd: python -m epab av check-dirty "tests produced artifacts"
   - cmd: python -m epab av release
+  - cmd: python -m epab av debug
   
 #on_finish:
   #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))  
