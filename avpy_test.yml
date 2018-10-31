@@ -22,67 +22,27 @@ environment:
   PYTHON_ARCH: "64"
   GIT_PATH: "%GIT_DAEMON_PATH%"
   SENTRY_ORG: "etcher"
-  GH_TOKEN:
-    secure: H9M/aPctMSk1+0AWe/l5D0U3oXto404/4UYiPMCECpjy0llgb8cBKTRyr20UDWdX
-  GH_MAIL:
-    secure: hyFFOoK6WbxtLxy2jOGlOPbRJ33Al8E1B0QeT+qUqJ8=
-  PYPI_PWD:
-    secure: sVfnGb1FQyKRJg6kD9c6aQ==
-  TWINE_USERNAME:
-    secure: X+bBVQdggCzIpfy5LX85tg==
-  TWINE_PASSWORD :
-    secure: sVfnGb1FQyKRJg6kD9c6aQ==
-  SENTRY_AUTH_TOKEN:
-    secure: aSyv1ixwt4NsnUs5LXXvu/sAmAetjIuofGIiJ7w7AOm8Q/d5TjzH8spimc35YmEEcIYulc5rhduVrpIiSIvrjCCLidvTscI5W8/TMAE6tB8=
 
 matrix:
   fast_finish: true
 
 init:
-  #- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
-        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
-        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
-        throw "There are newer queued builds for this pull request, failing early." }
-
-  # Check that we have the expected version and architecture for Python
   - set PATH=%PYTHON%;%PYTHON%\Scripts;C:\MinGW\msys\1.0\bin;%PATH%
   - "git config --system http.sslcainfo \"C:\\Program Files\\Git\\mingw64\\ssl\\certs\\ca-bundle.crt\""
   - "git config --global core.autocrlf false"
-  - "%PYTHON%/python -V"
-  - "%PYTHON%/python -c \"import struct;print(8 * struct.calcsize(\'P\'))\""
-  - "pip --version"
-
-  - cmd: echo %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
-  - cmd: echo %APPVEYOR_BUILD_WORKER_IMAGE%
-  - git config --global credential.helper store
-  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n"
-  - "git config --global user.email %GH_MAIL%"
-  - "git config --global user.name %APPVEYOR_ACCOUNT_NAME%"
-
-# cache:
-#   - C:\Users\appveyor\AppData\Local\pip\cache -> Pipfile
-#   - C:\ProgramData\chocolatey\bin -> appveyor.yml
-#   - C:\ProgramData\chocolatey\lib -> appveyor.yml
-
 
 install:
-  # - choco install md5 upx graphviz.portable
   - "%PYTHON%\\python.exe -m pip install --disable-pip-version-check --upgrade pip setuptools"
   - cmd: pip install git+https://github.com/etcher-be/epab@feature/test_branch#egg=epab
 
 build_script:
-  # - cmd: IF /I "%APPVEYOR_PROJECT_NAME%"=="epab" pipenv run pip install . --no-dependencies
   - cmd: python -m epab -v
   - cmd: python -m epab av clean
   - cmd: python -m epab av checkout-active-branch
+  - cmd: python -m epab av find-previous-version
   - cmd: python -m epab av compute-next-version
-  - cmd: pipenv run python -m epab freeze %EPAB_VERSION%
-  - cmd: cd dist
-  - ps: Get-ChildItem | ForEach-Object { md5 -n $_.FullName > "$($_.FullName).md5" }
-  - cmd: cd ..
-  - cmd: echo "%EPAB_VERSION%"
-  - cmd: echo "%RELEASE_DESCRIPTION%"
+  - cmd: python -m epab av make-release-description
+  - cmd: python -m epab av debug
   
 #on_finish:
   #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))  
