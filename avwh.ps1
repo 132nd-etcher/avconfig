@@ -4,14 +4,14 @@
 
 $STATUS=$args[0]
 $WEBHOOK_URL=$args[1]
-$ARTIFACT=args[2]
+$ARTIFACT=$args[2]
 
 if (!$WEBHOOK_URL) {
   Write-Output "DISCORD: [Webhook]: No webhook defined, skipping"
   Exit
 }
 
-if (!$ARTIFACT) {
+if (!$WEBHOOK_URL) {
   Write-Output "DISCORD: [Webhook]: No artifact defined, skipping"
   Exit
 }
