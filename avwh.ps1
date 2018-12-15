@@ -11,6 +11,11 @@ if (!$WEBHOOK_URL) {
   Exit
 }
 
+if (!$ARTIFACT) {
+  Write-Output "DISCORD: [Webhook]: No artifact defined, skipping"
+  Exit
+}
+
 Write-Output "DISCORD: [Webhook]: Sending webhook to Discord..."
 
 Switch ($STATUS) {
