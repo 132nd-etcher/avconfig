@@ -7,13 +7,11 @@ $WEBHOOK_URL=$args[1]
 $ARTIFACT=args[2]
 
 if (!$WEBHOOK_URL) {
-  Write-Output "WARNING!!"
-  Write-Output "You need to pass the WEBHOOK_URL environment variable as the second argument to this script."
-  Write-Output "For details & guide, visit: https://github.com/DiscordHooks/appveyor-discord-webhook"
+  Write-Output "DISCORD: [Webhook]: No webhook defined, skipping"
   Exit
 }
 
-Write-Output "[Webhook]: Sending webhook to Discord..."
+Write-Output "DISCORD: [Webhook]: Sending webhook to Discord..."
 
 Switch ($STATUS) {
   "success" {
@@ -25,8 +23,8 @@ Switch ($STATUS) {
     Break
   }
   default {
-    Write-Output "Default!"
-    Break
+    Write-Output "DISCORD: [Webhook]: unknown build status: $STATUS"
+    Exit
   }
 }
 $AVATAR="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Appveyor_logo.svg/256px-Appveyor_logo.svg.png"
@@ -82,7 +80,7 @@ $WEBHOOK_DATA="{
     ""fields"": [
       {
         ""name"": ""Direct download"",
-        ""value"": ""[$ARTIFACT](https://ci.appveyor.com/api/buildjobs/$env:APPVEYOR_JOB_ID/artifacts/$ARTIFACT)"",
+        ""value"": ""[$ARTIFACT](https://ci.appveyor.com/api/projects/etcher/$env:APPVEYOR_PROJECT_NAME/artifacts/$ARTIFACT?branch=$env:APPVEYOR_REPO_BRANCH)"",
         ""inline"": true
       },
       {
@@ -104,4 +102,4 @@ Invoke-RestMethod -Uri "$WEBHOOK_URL" -Method "POST" -UserAgent "AppVeyor-Webhoo
   -ContentType "application/json" -Header @{"X-Author"="etcher#4165"} `
   -Body $WEBHOOK_DATA
 
-Write-Output "[Webhook]: Successfully sent the webhook."
+Write-Output "DISCORD: [Webhook]: Successfully sent the webhook."
