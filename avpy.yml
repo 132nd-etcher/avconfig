@@ -82,6 +82,7 @@ build_script:
   # - cmd: IF /I "%APPVEYOR_PROJECT_NAME%"=="epab" pipenv run pip install . --no-dependencies
   - cmd: pipenv run python -m epab -v
   - cmd: pipenv run python -m epab release
+  - cmd: IF "%CODECOV_TOKEN%"=="" (ECHO skipping codecov) ELSE (pip install codecov && codecov)
   - cmd: pipenv run python -m epab freeze %EPAB_VERSION%
   - cmd: cd dist
   - ps: Get-ChildItem | ForEach-Object { md5 -n $_.FullName > "$($_.FullName).md5" }
