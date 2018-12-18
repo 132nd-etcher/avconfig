@@ -85,7 +85,7 @@ $WEBHOOK_DATA="{
     ""fields"": [
       {
         ""name"": ""Direct download"",
-        ""value"": ""[$ARTIFACT](https://ci.appveyor.com/api/projects/etcher/$env:APPVEYOR_PROJECT_NAME/artifacts/$ARTIFACT?branch=$env:APPVEYOR_REPO_BRANCH)"",
+        ""value"": ""[``$ARTIFACT``](https://ci.appveyor.com/api/projects/etcher/$env:APPVEYOR_PROJECT_NAME/artifacts/$($ARTIFACT)?branch=$env:APPVEYOR_REPO_BRANCH)"",
         ""inline"": true
       },
       {
